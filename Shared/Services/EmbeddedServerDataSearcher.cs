@@ -81,8 +81,25 @@ public class EmbeddedServerDataSearcher : IEmbeddedServerDataSearcher
             var result = SearchBuffer(fs, AppConstants.EmbeddedImmySignature);
             if (result == -1)
             {
-                await fs.DisposeAsync();
-                return Result.Fail<RewritableStream>("Signature not found in file buffer.");
+                fs.Close();
+
+                fs = File.OpenWrite(filePath);
+
+                byte[] dataBlock = new byte[AppConstants.EmbeddedDataBlockLength];
+
+                fs.Seek(0, SeekOrigin.End);
+                await fs.WriteAsync(AppConstants.EmbeddedImmySignature, 0, AppConstants.EmbeddedDataBlockLength);
+                await fs.WriteAsync(dataBlock, 0, dataBlock.Length);
+
+                fs.Close();
+
+                fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                if (SearchBuffer(fs, AppConstants.EmbeddedImmySignature) == 1)
+                {
+                    await fs.DisposeAsync();
+                    return Result.Fail<RewritableStream>("Signature not found in file buffer.");
+                }
             }
 
             var rewriteMap = new Dictionary<long, byte>();
