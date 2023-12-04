@@ -1,18 +1,18 @@
 ﻿@page "/downloads"
 @using Microsoft.AspNetCore.Hosting
-@using Microsoft.Extensions.Logging 
+@using Microsoft.Extensions.Logging
 
 @inject IAuthService Auth
 @inject IDataService DataService
 @inject UserManager<RemotelyUser> UserManager
 @inject IWebHostEnvironment HostEnv
 @inject NavigationManager NavManager
-@inject ILogger<Downloads> Logger 
+@inject ILogger<Downloads> Logger
 
 <div class="row mb-3">
-    <h4>Portable Instant Support Clients</h4>
+    <h4>Портативные (portbale) клиенты</h4>
     <div class="text-info col-sm-12 pl-0 mb-2">
-        Instant desktop sharing.  No account required.
+        Доступ к устройству для помощи. Учетная запись не требуется.
     </div>
     <div class="col-sm-6 mb-3">
         <strong>Windows (64-Bit)</strong>
@@ -32,29 +32,19 @@
             <a target="_blank" href="/api/ClientDownloads/Desktop/UbuntuDesktop/@_organizationId">Ubuntu Executable</a>
         </p>
     </div>
-    @*<div class="col-sm-6 mb-3">
-        <strong>macOS x64 (10.12 - 10.15)</strong>
-        <p>
-            <a target="_blank" href="/api/ClientDownloads/Desktop/MacOS-x64/@_organizationId">macOS x64 Executable</a>
-        </p>
-        <strong>macOS arm64 (11.01)</strong>
-        <p>
-            <a target="_blank" href="/api/ClientDownloads/Desktop/MacOS-arm64/@_organizationId">macOS arm64 Executable</a>
-        </p>
-    </div>*@
 </div>
 
 
 <div class="row">
-    <h4>Resident Agents</h4>
+    <h4>Комплекты для установки</h4>
     <div class="text-info col-sm-12 pl-0 mb-2">
-        Installable background agents that provide unattended access and remote scripting.
+        Установочные комплекты сервисов агента, которые предоставляют удаленный доступ и запуск скриптов.
     </div>
 
     @if (!_isAuthenticated)
     {
         <div class="col-sm-6 mb-3">
-            <h6>Must be logged in to download.</h6>
+            <h6>Для загрузки агента необходимо авторизоваться.</h6>
         </div>
 
     }
@@ -64,15 +54,11 @@
             <strong>Windows 10 / 11 (64-Bit and 32-Bit)</strong>
             <p>
                 <a target="_blank" href="/API/ClientDownloads/WindowsInstaller">Windows Installer (x64/x86)</a>
-                <br />
-                <a target="_blank" href="/Content/Remotely-Win-x64.zip">Windows x64 Files Only</a>
-                <br />
-                <a target="_blank" href="/Content/Remotely-Win-x86.zip">Windows x86 Files Only</a>
             </p>
 
             <p>
-                <div class="small">Example Quiet Install:</div>
-                
+                <div class="small">Пример "тихой" установки сервиса агента:</div>
+
                 <code class="label label-default small">
                     Remotely_Installer.exe
                     -install
@@ -82,13 +68,13 @@
                 </code>
             </p>
             <p>
-                <div class="small">Example Quiet Uninstall:</div>
+                <div class="small">Пример "тихого" удаления сервиса агента</div>
 
                 <code class="label label-default small">Remotely_Installer.exe -uninstall -quiet</code>
             </p>
             <p>
-                <div class="small">Example Local Install:</div>
-               
+                <div class="small">Пример локальной установки:</div>
+
                 <code class="label label-default small">
                     Remotely_Installer.exe
                     -install
@@ -99,8 +85,8 @@
                 </code>
             </p>
             <p>
-                <div class="small">All Override Options:</div>
-                
+                <div class="small">Все возможные ключи командной строки:</div>
+
                 <code class="label label-default small">
                     Remotely_Installer.exe -install -quiet -supportshortcut
                     -organizationid "0b3d706b-9c5d-41e6-8ae9-5720d16324e6"
@@ -110,6 +96,20 @@
                     -deviceuuid "eebb4d87-5459-4976-989e-a7876dffc69c"
                 </code>
             </p>
+
+            <strong>Дополнительные компоненты</strong>
+            <p>
+                <a target="_blank" href="/Content/Win-Components/ndp48-x86-x64-allos-enu.exe">.Net 4.8 Автономный установщик</a>
+                <br />
+                <a target="_blank" href="/Content/Win-Components/USERTrustRSACertificationAuthority.crl">Сертифкат USER Trust RSA Certification Authority</a>
+                <br />
+                <a target="_blank" href="/Content/Win-Components/isrgrootx1.der">Список отзыва сертифкатов</a>
+                <br />
+                <div class="small">Для Windows 7 x86 - при запуске агента ошибка в журналре регистрации "failed to load the dll hostfxr"</div>
+                <a target="_blank" href="/Content/Win-Components/windows6.1-kb4457144-x86_d2d9bc4f25b27fe28b11b2cd18df9b7835f22df3.msu">Автономный установщик обновления KB4457144</a>
+
+            </p>
+
         </div>
 
         <div class="col-sm-6 mb-3">
@@ -122,13 +122,13 @@
                 <a target="_blank" href="/Content/Remotely-Linux.zip">Linux x64 Files Only</a>
             </p>
             <p>
-                <div class="small">Example Install:</div>
-                
+                <div class="small">Пример установки:</div>
+
                 <code class="label label-default small">sudo [path]/Install-Ubuntu-x64.sh</code>
             </p>
             <p>
-                <div class="small">Example Local Install:</div>
-              
+                <div class="small">Пример локальной установки:</div>
+
                 <code class="label label-default small">sudo [path]/Install-Ubuntu-x64.sh --path [path]/Remotely-Linux.zip</code>
             </p>
             <p>
@@ -138,37 +138,6 @@
             </p>
         </div>
 
-        <div class="col-sm-6 mb-3">
-            <strong>macOS x64 (10.12 - 10.15)</strong>
-            <p>
-                <a target="_blank" href="/API/ClientDownloads/MacOSInstaller-x64">macOS x64 Bash Installer</a>
-                <br />
-                <a target="_blank" href="/Content/Remotely-MacOS-x64.zip">macOS x64 Files Only</a>
-            </p>
-
-            @*<strong>macOS arm64 (11.01)</strong>
-            <p>
-                <a target="_blank" href="/API/ClientDownloads/MacOSInstaller-arm64">macOS arm64 Bash Installer</a>
-                <br />
-                <a target="_blank" href="/Content/Remotely-MacOS-arm64.zip">macOS arm64 Files Only</a>
-            </p>*@
-
-            <p>
-                <div class="small">Example Install:</div>
-                
-                <code class="label label-default small">sudo [path]/Install-MacOS-x64.sh</code>
-            </p>
-            <p>
-                <div class="small">Example Local Install:</div>
-               
-                <code class="label label-default small">sudo [path]/Install-MacOS-x64.sh --path [path]/Remotely-MacOS-x64.zip</code>
-            </p>
-            <p>
-                <div class="small">Example Uninstall:</div>
-                
-                <code class="label label-default small">sudo [path]/Install-MacOS-x64.sh --uninstall</code>
-            </p>
-        </div>
     }
 
 </div>
