@@ -168,26 +168,8 @@ public partial class DevicesFrame : AuthComponentBase
                 continue;
             }
 
-            if (!string.IsNullOrWhiteSpace(_filter) &&
-                    device.Alias?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true &&
-                    device.CurrentUser?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true &&
-                    device.DeviceName?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true &&
-                    device.Notes?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true &&
-                    device.Platform?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true &&
-                    device.Tags?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true)
-            {
-                continue;
-            }
-
-            if (_selectedGroupId == _deviceGroupAll ||
-                _selectedGroupId == device.DeviceGroupID ||
-                (
-                    _selectedGroupId == _deviceGroupNone &&
-                    string.IsNullOrWhiteSpace(device.DeviceGroupID
-                )))
-            {
+            if (IsDeviceInFilter(device))
                 _filteredDevices.Add(device);
-            }
         }
 
         if (!string.IsNullOrWhiteSpace(_selectedSortProperty))
@@ -208,6 +190,29 @@ public partial class DevicesFrame : AuthComponentBase
                 return Comparer.Default.Compare(valueA, valueB) * direction;
             });
         }
+    }
+
+    private bool IsDeviceInFilter(Device device)
+    {
+        if (!string.IsNullOrWhiteSpace(_filter) &&
+                    device.Alias?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true &&
+                    device.CurrentUser?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true &&
+                    device.DeviceName?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true &&
+                    device.Notes?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true &&
+                    device.Platform?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true &&
+                    device.Tags?.Contains(_filter, StringComparison.OrdinalIgnoreCase) != true)
+        {
+            return false;
+        }
+
+        if (_selectedGroupId == _deviceGroupAll)
+            return true;
+
+
+        if (_selectedGroupId != device.DeviceGroupID)
+            return false;
+
+        return true;
     }
 
     private Device[] GetDisplayedDevices()
@@ -258,19 +263,19 @@ public partial class DevicesFrame : AuthComponentBase
         {
             var device = message.Device;
 
-            var collections = new[] { _allDevices, _filteredDevices };
+            var index = _allDevices.FindIndex(x => x.ID == device.ID);
+            if (index > -1)
+                _allDevices[index] = device;
+            else
+                _allDevices.Add(device);
 
-            foreach (var collection in collections)
+            index = _filteredDevices.FindIndex(x => x.ID == device.ID);
+            if (index > -1)
+                _filteredDevices[index] = device;
+            else
             {
-                var index = collection.FindIndex(x => x.ID == device.ID);
-                if (index > -1)
-                {
-                    collection[index] = device;
-                }
-                else
-                {
-                    collection.Add(device);
-                }
+                if (IsDeviceInFilter(device))
+                    _filteredDevices.Add(device);
             }
 
             Debouncer.Debounce(
