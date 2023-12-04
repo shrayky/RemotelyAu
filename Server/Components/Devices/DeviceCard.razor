@@ -30,12 +30,20 @@
         </div>
         <div class="overflow-hidden ml-2">
             <div class="d-inline-block">
-                <div>@Device.DeviceName</div>
-
-                <div class="small text-muted" style="height: 1rem">@Device.Alias</div>
+                @if (@Device.Alias == string.Empty || @Device.Alias == null)
+                {
+                    <div>@Device.DeviceName</div>
+                    <div class="small text-muted" style="height: 1rem">без описания </div>
+                }
+                else
+                {
+                    <div>@Device.Alias</div>
+                    <div class="small text-muted" style="height: 1rem">@Device.DeviceName</div>
+                }
             </div>
             
         </div>
+
         <div class="text-right">
             @if (IsExpanded)
             {
@@ -50,6 +58,19 @@
                    checked="@IsSelected"
                    @onchange="ToggleIsSelected"
                    @onclick:stopPropagation />
+        </div>
+
+        <div class="mt-1 ml-1 mr-1">
+            @if (!IsExpanded)
+            {
+                <button class="btn-block btn-outline-primary text-center"
+                    @onclick="() => StartRemoteControl(false)"
+                    @onclick:stopPropagation
+                    @oncontextmenu:stopPropagation>
+                    <i class="oi oi-laptop" title="Подключится"></i>
+                    <span class="ml-2">Подключится</span>
+                </button>
+            }
         </div>
 
     </div>
