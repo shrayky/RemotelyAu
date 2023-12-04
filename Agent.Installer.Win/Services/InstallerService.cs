@@ -264,6 +264,9 @@ public class InstallerService
         else
         {
             ProgressMessageChanged?.Invoke(this, "Downloading Remotely agent.");
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
             using (var client = new WebClient())
             {
                 client.DownloadProgressChanged += (sender, args) =>
